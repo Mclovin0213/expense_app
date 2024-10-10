@@ -4,14 +4,14 @@ import 'package:expense_tracking_app/models/expense.dart';
 import 'package:expense_tracking_app/widgets/new_expense.dart';
 import 'package:flutter/material.dart';
 
-class Expenses extends StatefulWidget {
-  const Expenses({super.key});
+class ExpensesPage extends StatefulWidget {
+  const ExpensesPage({super.key});
 
   @override
-  State<Expenses> createState() => _ExpensesState();
+  State<ExpensesPage> createState() => _ExpensesPageState();
 }
 
-class _ExpensesState extends State<Expenses> {
+class _ExpensesPageState extends State<ExpensesPage> {
   final List<Expense> _registeredExpenses = [
     Expense(
       title: "Flutter Course",
@@ -83,29 +83,36 @@ class _ExpensesState extends State<Expenses> {
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Flutter Expense Tracker"),
-        actions: [
-          IconButton(
+    return Stack(
+      alignment: Alignment.bottomRight,
+      children: [
+        width < 600
+            ? Column(
+                children: [
+                  Chart(expenses: _registeredExpenses),
+                  Expanded(child: mainContent),
+                ],
+              )
+            : Row(
+                children: [
+                  Expanded(child: Chart(expenses: _registeredExpenses)),
+                  Expanded(child: mainContent),
+                ],
+              ),
+        Padding(
+          padding: const EdgeInsets.only(
+            right: 8,
+            bottom: 8,
+          ),
+          child: FloatingActionButton(
             onPressed: _openAddExpenseOverlay,
-            icon: const Icon(Icons.add),
-          )
-        ],
-      ),
-      body: width < 600
-          ? Column(
-              children: [
-                Chart(expenses: _registeredExpenses),
-                Expanded(child: mainContent),
-              ],
-            )
-          : Row(
-              children: [
-                Expanded(child: Chart(expenses: _registeredExpenses)),
-                Expanded(child: mainContent),
-              ],
+            child: Icon(
+              Icons.add,
+              size: 30,
             ),
+          ),
+        ),
+      ],
     );
   }
 }

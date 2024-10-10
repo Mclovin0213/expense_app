@@ -1,4 +1,5 @@
-import 'package:expense_tracking_app/widgets/expenses.dart';
+import 'package:expense_tracking_app/pages/expenses.dart';
+import 'package:expense_tracking_app/app_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -73,7 +74,7 @@ class MyApp extends StatelessWidget {
         // ),
       ),
       themeMode: ThemeMode.system,
-      home: const Expenses(),
+      home: AppRoute(),
     );
   }
 }
