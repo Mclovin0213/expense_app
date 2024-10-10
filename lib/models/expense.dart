@@ -8,6 +8,8 @@ const uuid = Uuid();
 
 enum Category { food, travel, leisure, work }
 
+enum ExpenseType { recurring, oneTime }
+
 const categoryIcons = {
   Category.food: Icons.lunch_dining,
   Category.leisure: Icons.movie,
