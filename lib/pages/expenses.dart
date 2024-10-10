@@ -121,7 +121,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
               selected: <ViewOptions>{expensesView},
               onSelectionChanged: (Set<ViewOptions> newSelection) {
                 setState(() {
-
+                  showExpenses(newSelection);
                 });
               },
             ),
