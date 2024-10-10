@@ -35,7 +35,11 @@ class _ExpensesPageState extends State<ExpensesPage> {
 
   void showExpenses(Set<ViewOptions> newSelection) {
     if (newSelection == ViewOptions.all) {
-
+      _filteredExpenses = _registeredExpenses;
+    } else if (newSelection == ViewOptions.recurring) {
+      _filteredExpenses = _registeredExpenses.where((expense) => expense.expenseType == ExpenseType.recurring).toList();
+    } else {
+      _filteredExpenses = _registeredExpenses.where((expense) => expense.expenseType == ExpenseType.oneTime).toList();
     }
   }
 
