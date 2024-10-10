@@ -151,6 +151,28 @@ class _NewExpenseState extends State<NewExpense> {
                   Row(
                     children: [
                       DropdownButton(
+                        value: _selectedExpenseType,
+                        items: ExpenseType.values
+                            .map(
+                              (expense) => DropdownMenuItem(
+                                value: expense,
+                                child: Text(
+                                  expense.name.toUpperCase(),
+                                  style: Theme.of(context).textTheme.titleLarge
+                                ),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (value) {
+                          if (value == null) {
+                            return;
+                          }
+                          setState(() {
+                            _selectedExpenseType = value;
+                          });
+                        },
+                      ),
+                      DropdownButton(
                         value: _selectedCategory,
                         items: Category.values
                             .map(

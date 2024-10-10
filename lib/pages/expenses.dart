@@ -106,7 +106,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
           ),
           child: FloatingActionButton(
             onPressed: _openAddExpenseOverlay,
-            child: Icon(
+            child: const Icon(
               Icons.add,
               size: 30,
             ),

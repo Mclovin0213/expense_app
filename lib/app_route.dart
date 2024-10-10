@@ -12,8 +12,8 @@ class AppRoute extends StatefulWidget {
 class _AppRouteState extends State<AppRoute> {
   int _selectedIndex = 0;
   static final List<Widget> _navPages = [
-    ExpensesPage(),
-    ChartPage()
+    const ExpensesPage(),
+    const ChartPage()
   ];
 
   static final List<String> _pageTitles = [
