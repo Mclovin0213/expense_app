@@ -11,21 +11,33 @@ class ExpensesPage extends StatefulWidget {
   State<ExpensesPage> createState() => _ExpensesPageState();
 }
 
+enum ViewOptions {all, oneTime, recurring}
+
 class _ExpensesPageState extends State<ExpensesPage> {
   final List<Expense> _registeredExpenses = [
     Expense(
-      title: "Flutter Course",
-      amount: 19.99,
-      date: DateTime.now(),
-      category: Category.work,
-    ),
+        title: "Flutter Course",
+        amount: 19.99,
+        date: DateTime.now(),
+        category: Category.work,
+        expenseType: ExpenseType.oneTime),
     Expense(
-      title: "Cinema",
-      amount: 15.69,
-      date: DateTime.now(),
-      category: Category.leisure,
-    ),
+        title: "Cinema",
+        amount: 15.69,
+        date: DateTime.now(),
+        category: Category.leisure,
+        expenseType: ExpenseType.oneTime),
   ];
+
+  late final List<Expense> _filteredExpenses;
+
+  ViewOptions expensesView = ViewOptions.all;
+
+  void showExpenses(Set<ViewOptions> newSelection) {
+    if (newSelection == ViewOptions.all) {
+
+    }
+  }
 
   void _openAddExpenseOverlay() {
     showModalBottomSheet(
@@ -70,8 +82,6 @@ class _ExpensesPageState extends State<ExpensesPage> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-
     Widget mainContent = const Center(
       child: Text('No Expenses found. Start adding some!'),
     );
@@ -86,19 +96,34 @@ class _ExpensesPageState extends State<ExpensesPage> {
     return Stack(
       alignment: Alignment.bottomRight,
       children: [
-        width < 600
-            ? Column(
-                children: [
-                  Chart(expenses: _registeredExpenses),
-                  Expanded(child: mainContent),
-                ],
-              )
-            : Row(
-                children: [
-                  Expanded(child: Chart(expenses: _registeredExpenses)),
-                  Expanded(child: mainContent),
-                ],
-              ),
+        Column(
+          children: [
+            Chart(expenses: _registeredExpenses),
+            SegmentedButton(
+              segments: const [
+                ButtonSegment(
+                  value: ViewOptions.all,
+                  label: Text('All'),
+                ),
+                ButtonSegment(
+                  value: ViewOptions.recurring,
+                  label: Text('Recurring'),
+                ),
+                ButtonSegment(
+                  value: ViewOptions.oneTime,
+                  label: Text('One-Time'),
+                ),
+              ],
+              selected: <ViewOptions>{expensesView},
+              onSelectionChanged: (Set<ViewOptions> newSelection) {
+                setState(() {
+
+                });
+              },
+            ),
+            Expanded(child: mainContent),
+          ],
+        ),
         Padding(
           padding: const EdgeInsets.only(
             right: 8,

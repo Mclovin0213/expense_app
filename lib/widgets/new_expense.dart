@@ -87,6 +87,7 @@ class _NewExpenseState extends State<NewExpense> {
         amount: enteredAmount,
         date: _selectedDate!,
         category: _selectedCategory,
+        expenseType: _selectedExpenseType
       ),
     );
     Navigator.pop(context);

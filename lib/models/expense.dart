@@ -23,6 +23,7 @@ class Expense {
     required this.amount,
     required this.date,
     required this.category,
+    required this.expenseType
   }) : id = uuid.v4();
 
   final String id;
@@ -30,6 +31,7 @@ class Expense {
   final double amount;
   final DateTime date;
   final Category category;
+  final ExpenseType expenseType;
 
   String get formattedDate {
     return formatter.format(date);
