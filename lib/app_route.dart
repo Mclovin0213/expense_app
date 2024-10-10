@@ -16,6 +16,10 @@ class _AppRouteState extends State<AppRoute> {
     ChartPage()
   ];
 
+  static final List<String> _pageTitles = [
+    "Expenses",
+    "Charts"
+  ];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -27,7 +31,7 @@ class _AppRouteState extends State<AppRoute> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Flutter Expense Tracker"),
+        title: Text(_pageTitles[_selectedIndex]),
         centerTitle: true,
       ),
       body: Center(
