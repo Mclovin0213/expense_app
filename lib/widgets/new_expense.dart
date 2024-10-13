@@ -21,7 +21,8 @@ class _NewExpenseState extends State<NewExpense> {
   final _amountController = TextEditingController();
   DateTime? _selectedDate;
   Category _selectedCategory = Category.leisure;
-  ExpenseType _selectedExpenseType = ExpenseType.oneTime;
+  RecurringType _selectedRecurringType = RecurringType.monthly;
+  bool _isRecurring = false;
 
   void _presentDatePicker() async {
     final now = DateTime.now();
@@ -81,15 +82,27 @@ class _NewExpenseState extends State<NewExpense> {
       _showDialog();
       return;
     }
-    widget.onAddExpense(
-      Expense(
+
+    final expense;
+
+    if (_isRecurring) {
+      expense = RecurringExpense(
         title: _titleController.text,
         amount: enteredAmount,
         date: _selectedDate!,
         category: _selectedCategory,
-        expenseType: _selectedExpenseType
-      ),
-    );
+        recurringType: _selectedRecurringType,
+      );
+    } else {
+      expense = Expense(
+        title: _titleController.text,
+        amount: enteredAmount,
+        date: _selectedDate!,
+        category: _selectedCategory,
+      );
+    }
+
+    widget.onAddExpense(expense);
     Navigator.pop(context);
   }
 
@@ -173,30 +186,70 @@ class _NewExpenseState extends State<NewExpense> {
                       });
                     },
                   ),
-                  const SizedBox(width: 40,),
-                  DropdownButton(
-                    value: _selectedExpenseType,
-                    items: ExpenseType.values
-                        .map(
-                          (expense) => DropdownMenuItem(
-                            value: expense,
-                            child: Text(
-                              expense.name.toUpperCase(),
-                            ),
-                          ),
-                        )
-                        .toList(),
-                    onChanged: (value) {
-                      if (value == null) {
-                        return;
-                      }
-                      setState(() {
-                        _selectedExpenseType = value;
-                      });
-                    },
+                  const SizedBox(
+                    width: 40,
+                  ),
+                  // DropdownButton(
+                  //   value: _selectedExpenseType,
+                  //   items: ExpenseType.values
+                  //       .map(
+                  //         (expense) => DropdownMenuItem(
+                  //           value: expense,
+                  //           child: Text(
+                  //             expense.name.toUpperCase(),
+                  //           ),
+                  //         ),
+                  //       )
+                  //       .toList(),
+                  //   onChanged: (value) {
+                  //     if (value == null) {
+                  //       return;
+                  //     }
+                  //     setState(() {
+                  //       _selectedExpenseType = value;
+                  //     });
+                  //   },
+                  // ),
+                  Row(
+                    children: [
+                      const Text("Recurring?"),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      Switch(
+                        value: _isRecurring,
+                        onChanged: (value) {
+                          setState(() {
+                            _isRecurring = value;
+                          });
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),
+              if (_isRecurring)
+                DropdownButton(
+                  value: _selectedRecurringType,
+                  items: RecurringType.values
+                      .map(
+                        (recurringType) => DropdownMenuItem(
+                          value: recurringType,
+                          child: Text(
+                            recurringType.name.toUpperCase(),
+                          ),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (value) {
+                    if (value == null) {
+                      return;
+                    }
+                    setState(() {
+                      _selectedRecurringType = value;
+                    });
+                  },
+                ),
               Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,

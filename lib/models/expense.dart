@@ -8,7 +8,7 @@ const uuid = Uuid();
 
 enum Category { food, travel, leisure, work }
 
-enum ExpenseType { recurring, oneTime }
+enum RecurringType { monthly, weekly, yearly }
 
 const categoryIcons = {
   Category.food: Icons.lunch_dining,
@@ -23,7 +23,6 @@ class Expense {
     required this.amount,
     required this.date,
     required this.category,
-    required this.expenseType
   }) : id = uuid.v4();
 
   final String id;
@@ -31,11 +30,22 @@ class Expense {
   final double amount;
   final DateTime date;
   final Category category;
-  final ExpenseType expenseType;
 
   String get formattedDate {
     return formatter.format(date);
   }
+}
+
+class RecurringExpense extends Expense {
+  RecurringExpense({
+    required super.title,
+    required super.amount,
+    required super.date,
+    required super.category,
+    required this.recurringType,
+  });
+
+  final RecurringType recurringType;
 }
 
 class ExpenseBucket {

@@ -1,3 +1,4 @@
+import 'package:expense_tracking_app/widgets/budget_view.dart';
 import 'package:expense_tracking_app/widgets/chart/chart.dart';
 import 'package:expense_tracking_app/widgets/expenses_list/expenses_list.dart';
 import 'package:expense_tracking_app/models/expense.dart';
@@ -14,23 +15,31 @@ class ExpensesPage extends ConsumerStatefulWidget {
   ConsumerState<ExpensesPage> createState() => _ExpensesPageState();
 }
 
+// different view options from segmented button
 enum ViewOption { all, oneTime, recurring }
 
 class _ExpensesPageState extends ConsumerState<ExpensesPage> {
+  // default view as .all
   ViewOption expensesView = ViewOption.all;
 
+  // filters the expenses list based on viewOption selected
   List<Expense> _filterExpenses(List<Expense> expenses, ViewOption viewOption) {
     switch (viewOption) {
       case ViewOption.recurring:
-        return expenses.where((expense) => expense.expenseType == ExpenseType.recurring).toList();
+        return expenses
+            .whereType<RecurringExpense>()
+            .toList();
       case ViewOption.oneTime:
-        return expenses.where((expense) => expense.expenseType == ExpenseType.oneTime).toList();
+        return expenses
+            .where((expense) => expense is! RecurringExpense)
+            .toList();
       case ViewOption.all:
       default:
         return expenses;
     }
   }
 
+  // changes the current view
   void showExpenses(ViewOption newSelection) {
     setState(() {
       expensesView = newSelection;
@@ -44,7 +53,8 @@ class _ExpensesPageState extends ConsumerState<ExpensesPage> {
       context: context,
       builder: (ctx) {
         return NewExpense(
-          onAddExpense: (expense) => ref.read(expensesProvider.notifier).addExpense(expense),
+          onAddExpense: (expense) =>
+              ref.read(expensesProvider.notifier).addExpense(expense),
         );
       },
     );
@@ -72,12 +82,14 @@ class _ExpensesPageState extends ConsumerState<ExpensesPage> {
   Widget build(BuildContext context) {
     final registeredExpenses = ref.watch(expensesProvider);
 
+    // expenses shown on screen
     final filteredExpenses = _filterExpenses(registeredExpenses, expensesView);
 
     Widget mainContent = const Center(
       child: Text('No Expenses found.'),
     );
 
+    // display filteredExpenses
     if (filteredExpenses.isNotEmpty) {
       mainContent = ExpensesList(
         expenses: filteredExpenses,
@@ -85,54 +97,53 @@ class _ExpensesPageState extends ConsumerState<ExpensesPage> {
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Expense Tracker'),
-      ),
-      body: Stack(
-        alignment: Alignment.bottomRight,
-        children: [
-          Column(
-            children: [
-              Chart(expenses: registeredExpenses),
-              SegmentedButton(
-                segments: const [
-                  ButtonSegment(
-                    value: ViewOption.all,
-                    label: Text('All'),
-                  ),
-                  ButtonSegment(
-                    value: ViewOption.recurring,
-                    label: Text('Recurring'),
-                  ),
-                  ButtonSegment(
-                    value: ViewOption.oneTime,
-                    label: Text('One-Time'),
-                  ),
-                ],
-                selected: <ViewOption>{expensesView},
-                onSelectionChanged: (Set<ViewOption> newSelection) {
-                  showExpenses(newSelection.first);
-                },
-              ),
-              Expanded(child: mainContent),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.only(
-              right: 8,
-              bottom: 8,
+    return Stack(
+      alignment: Alignment.bottomRight,
+      children: [
+        Column(
+          children: [
+            // Chart(expenses: registeredExpenses),
+            BudgetView(
+              totalExpenses: ref.read(expensesProvider.notifier).totalExpenses,
+              budget: 1500,
             ),
-            child: FloatingActionButton(
-              onPressed: _openAddExpenseOverlay,
-              child: const Icon(
-                Icons.add,
-                size: 30,
-              ),
+            SegmentedButton(
+              segments: const [
+                ButtonSegment(
+                  value: ViewOption.all,
+                  label: Text('All'),
+                ),
+                ButtonSegment(
+                  value: ViewOption.recurring,
+                  label: Text('Recurring'),
+                ),
+                ButtonSegment(
+                  value: ViewOption.oneTime,
+                  label: Text('One-Time'),
+                ),
+              ],
+              selected: <ViewOption>{expensesView},
+              onSelectionChanged: (Set<ViewOption> newSelection) {
+                showExpenses(newSelection.first);
+              },
+            ),
+            Expanded(child: mainContent),
+          ],
+        ),
+        Padding(
+          padding: const EdgeInsets.only(
+            right: 8,
+            bottom: 8,
+          ),
+          child: FloatingActionButton(
+            onPressed: _openAddExpenseOverlay,
+            child: const Icon(
+              Icons.add,
+              size: 30,
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

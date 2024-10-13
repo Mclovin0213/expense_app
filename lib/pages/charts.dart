@@ -13,11 +13,7 @@ class ChartsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final expenses = ref.watch(expensesProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Expense Charts'),
-      ),
-      body: SingleChildScrollView(
+    return SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -45,8 +41,7 @@ class ChartsPage extends ConsumerWidget {
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 
   Widget _buildPieChart(List<Expense> expenses) {
