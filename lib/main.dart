@@ -1,5 +1,6 @@
 import 'package:expense_tracking_app/app_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -8,7 +9,7 @@ void main() {
   // ]).then((fn) {
   //   runApp(const MyApp());
   // });
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 var kColorScheme = ColorScheme.fromSeed(

@@ -13,7 +13,7 @@ class _AppRouteState extends State<AppRoute> {
   int _selectedIndex = 0;
   static final List<Widget> _navPages = [
     const ExpensesPage(),
-    const ChartPage()
+    const ChartsPage()
   ];
 
   static final List<String> _pageTitles = [
