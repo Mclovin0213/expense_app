@@ -9,7 +9,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/expenses_provider.dart'; // Import provider
 
 class ExpensesPage extends ConsumerStatefulWidget {
-  const ExpensesPage({super.key});
+  const ExpensesPage({
+    super.key,
+    required this.budget,
+  });
+
+  final double budget;
 
   @override
   ConsumerState<ExpensesPage> createState() => _ExpensesPageState();
@@ -26,9 +31,7 @@ class _ExpensesPageState extends ConsumerState<ExpensesPage> {
   List<Expense> _filterExpenses(List<Expense> expenses, ViewOption viewOption) {
     switch (viewOption) {
       case ViewOption.recurring:
-        return expenses
-            .whereType<RecurringExpense>()
-            .toList();
+        return expenses.whereType<RecurringExpense>().toList();
       case ViewOption.oneTime:
         return expenses
             .where((expense) => expense is! RecurringExpense)
@@ -81,6 +84,7 @@ class _ExpensesPageState extends ConsumerState<ExpensesPage> {
   @override
   Widget build(BuildContext context) {
     final registeredExpenses = ref.watch(expensesProvider);
+    final totalMonthlyExpenses = ref.read(expensesProvider.notifier).totalMonthlyExpenses;
 
     // expenses shown on screen
     final filteredExpenses = _filterExpenses(registeredExpenses, expensesView);
@@ -102,10 +106,9 @@ class _ExpensesPageState extends ConsumerState<ExpensesPage> {
       children: [
         Column(
           children: [
-            // Chart(expenses: registeredExpenses),
             BudgetView(
-              totalExpenses: ref.read(expensesProvider.notifier).totalExpenses,
-              budget: 1500,
+              totalExpenses: totalMonthlyExpenses,
+              budget: widget.budget,
             ),
             SegmentedButton(
               segments: const [

@@ -8,7 +8,7 @@ const uuid = Uuid();
 
 enum Category { food, travel, leisure, work }
 
-enum RecurringType { monthly, weekly, yearly }
+enum RecurringType { daily, monthly, weekly, yearly }
 
 const categoryIcons = {
   Category.food: Icons.lunch_dining,

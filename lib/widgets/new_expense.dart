@@ -189,27 +189,6 @@ class _NewExpenseState extends State<NewExpense> {
                   const SizedBox(
                     width: 40,
                   ),
-                  // DropdownButton(
-                  //   value: _selectedExpenseType,
-                  //   items: ExpenseType.values
-                  //       .map(
-                  //         (expense) => DropdownMenuItem(
-                  //           value: expense,
-                  //           child: Text(
-                  //             expense.name.toUpperCase(),
-                  //           ),
-                  //         ),
-                  //       )
-                  //       .toList(),
-                  //   onChanged: (value) {
-                  //     if (value == null) {
-                  //       return;
-                  //     }
-                  //     setState(() {
-                  //       _selectedExpenseType = value;
-                  //     });
-                  //   },
-                  // ),
                   Row(
                     children: [
                       const Text("Recurring?"),

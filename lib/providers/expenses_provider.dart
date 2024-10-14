@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:expense_tracking_app/models/expense.dart';
 
@@ -47,6 +48,73 @@ class ExpensesNotifier extends StateNotifier<List<Expense>> {
       total += expense.amount;
     }
     return total;
+  }
+
+  double get totalMonthlyExpenses {
+    final now = DateTime.now();
+    final currentMonth = now.month;
+    final currentYear = now.year;
+
+    double total = 0;
+
+    for (final expense in state) {
+      if (expense is RecurringExpense) {
+        if (_isRecurringExpenseInCurrentMonth(expense, currentMonth, currentYear)) {
+          total += expense.amount * timesInCurrentMonth(expense, currentMonth, currentYear);
+        }
+      } else {
+        if (expense.date.month == currentMonth && expense.date.year == currentYear) {
+          total += expense.amount;
+        }
+      }
+    }
+    return total;
+  }
+
+  int timesInCurrentMonth(RecurringExpense expense, int currentMonth, int currentYear) {
+    final DateTime startDate = expense.date;
+
+    if (expense.recurringType == RecurringType.monthly) {
+      return 1;
+    } else if (expense.recurringType == RecurringType.weekly) {
+      DateTime firstDayOfMonth = DateTime(currentYear, currentMonth, 1);
+      DateTime lastDayOfMonth = DateTime(currentYear, currentMonth + 1, 0);
+
+      int recurrenceCount = 0;
+      DateTime paymentDate = startDate;
+
+      while (paymentDate.isBefore(lastDayOfMonth.add(const Duration(days: 1)))) {
+        if (paymentDate.isAfter(firstDayOfMonth.subtract(const Duration(days: 1)))) {
+          recurrenceCount++;
+        }
+        paymentDate = paymentDate.add(const Duration(days: 7)); // Weekly recurrence
+      }
+
+      return recurrenceCount;
+    } else if (expense.recurringType == RecurringType.daily) {
+      return DateUtils.getDaysInMonth(currentYear, currentMonth) - startDate.day;
+    }
+
+    return 0; // Fallback for non-recurring or unsupported recurring types
+  }
+
+  bool _isRecurringExpenseInCurrentMonth(
+      RecurringExpense expense, int currentMonth, int currentYear) {
+    final DateTime startDate = expense.date;
+
+    if (expense.recurringType == RecurringType.monthly) {
+      return (startDate.year < currentYear || (startDate.year == currentYear && startDate.month <= currentMonth));
+    } else if (expense.recurringType == RecurringType.weekly) {
+      DateTime paymentDate = startDate;
+      while (paymentDate.isBefore(DateTime(currentYear, currentMonth + 1, 1))) {
+        if (paymentDate.month == currentMonth && paymentDate.year == currentYear) {
+          return true;
+        }
+        paymentDate = paymentDate.add(const Duration(days: 7));
+      }
+    }
+
+    return false;
   }
 }
 
